@@ -1,0 +1,65 @@
+//Autor: Alexis Chávez Mendoza 
+// Colección usuarios
+db.createCollection("usuarios", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["nombre", "correo", "contraseña"],
+            properties: {
+                nombre: { bsonType: "string" },
+                correo: { bsonType: "string" },
+                contraseña: { bsonType: "string" },
+                grupos: { bsonType: "array", items: { bsonType: "objectId" } } // Relación 1:N con grupos referenciado
+            }
+        }
+    }
+});
+
+// Colección contactos con embebidos
+db.createCollection("contactos", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["nombre_contacto", "id_usuario"],
+            properties: {
+                nombre_contacto: { bsonType: "string" },
+                id_usuario: { bsonType: "objectId" },
+                numeros_telefono: { // Embebido 1:N
+                    bsonType: "array",
+                    items: {
+                        bsonType: "object",
+                        required: ["numero", "tipo"],
+                        properties: {
+                            numero: { bsonType: "string" },
+                            tipo: { enum: ["personal", "trabajo", "otros"] }
+                        }
+                    }
+                },
+                correos_electronicos: { // Embebido 1:N
+                    bsonType: "array",
+                    items: {
+                        bsonType: "object",
+                        required: ["correo", "tipo"],
+                        properties: {
+                            correo: { bsonType: "string" },
+                            tipo: { enum: ["personal", "trabajo", "otros"] }
+                        }
+                    }
+                },
+                direcciones: { // Embebido 1:N
+                    bsonType: "array",
+                    items: {
+                        bsonType: "object",
+                        required: ["direccion"],
+                        properties: {
+                            direccion: { bsonType: "string" },
+                            ciudad: { bsonType: "string" },
+                            codigo_postal: { bsonType: "string" },
+                            pais: { bsonType: "string" }
+                        }
+                    }
+                }
+            }
+        }
+    }
+});
