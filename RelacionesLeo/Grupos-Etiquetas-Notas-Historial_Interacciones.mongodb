@@ -1,0 +1,72 @@
+//Autor: Leonardo León Moreno
+// Colección grupos con referencia a usuarios 1:N
+db.createCollection("grupos", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["nombre_grupo", "id_usuario"],
+            properties: {
+                nombre_grupo: { bsonType: "string" },
+                id_usuario: { bsonType: "objectId" } // Referenciado con usuarios
+            }
+        }
+    }
+});
+
+// Colección etiquetas 
+db.createCollection("etiquetas", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["nombre_etiqueta"],
+            properties: {
+                nombre_etiqueta: { bsonType: "string" }
+            }
+        }
+    }
+});
+
+// Colección contactos_etiquetas (N:M) Referenciado
+db.createCollection("contactos_etiquetas", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["id_contacto", "id_etiqueta"],
+            properties: {
+                id_contacto: { bsonType: "objectId" },
+                id_etiqueta: { bsonType: "objectId" }
+            }
+        }
+    }
+});
+
+// Colección notas con referencia a contactos 1.N
+db.createCollection("notas", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["id_contacto", "contenido"],
+            properties: {
+                id_contacto: { bsonType: "objectId" },
+                contenido: { bsonType: "string" },
+                fecha_creacion: { bsonType: "date" }
+            }
+        }
+    }
+});
+
+// Colección historial_interacciones con referencia a contactos 1:N
+db.createCollection("historial_interacciones", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["id_contacto", "tipo_interaccion"],
+            properties: {
+                id_contacto: { bsonType: "objectId" },
+                tipo_interaccion: { enum: ["llamada", "mensaje", "reunión", "otro"] },
+                notas: { bsonType: "string" },
+                fecha_interaccion: { bsonType: "date" }
+            }
+        }
+    }
+});
